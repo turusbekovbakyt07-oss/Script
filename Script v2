@@ -1,5 +1,5 @@
 /*
-Node Video Unlock Premium - Fixed
+Node Video Unlock Premium - Fixed Version
 */
 
 let body = $response.body;
@@ -7,7 +7,7 @@ let body = $response.body;
 if (body) {
     try {
         let obj = JSON.parse(body);
-        if ($request.url.indexOf("/user/info") != -1) {
+        if ($request.url.indexOf("/user/info") !== -1) {
             obj.data = obj.data || {};
             obj.data.is_premium = true;
             obj.data.premium_expired_time = 4070880000;
@@ -18,7 +18,6 @@ if (body) {
             $done({});
         }
     } catch (e) {
-        console.log("NodeVideo: Not a JSON response");
         $done({});
     }
 } else {
