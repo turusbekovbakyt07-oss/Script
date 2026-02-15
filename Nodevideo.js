@@ -1,18 +1,20 @@
-/*
-Node Video Premium Fix 2026
-*/
-
-let obj = JSON.parse($response.body);
-
-obj.data = {
-  "is_premium": true,
-  "premium_type": 1,
-  "premium_expired_time": 4070880000,
-  "has_order": true,
-  "is_free_trial": false,
-  "order_id": "888888888888888"
-};
-obj.status = 1;
-obj.msg = "success";
-
-$done({ body: JSON.stringify(obj) });
+let body = $response.body;
+if (body) {
+    try {
+        let obj = JSON.parse(body);
+        if ($request.url.indexOf("/user/info") !== -1) {
+            obj.data = obj.data || {};
+            obj.data.is_premium = true;
+            obj.data.premium_type = 1;
+            obj.data.premium_expired_time = 4070880000;
+            obj.data.has_order = true;
+            $done({ body: JSON.stringify(obj) });
+        } else {
+            $done({});
+        }
+    } catch (e) {
+        $done({});
+    }
+} else {
+    $done({});
+}
