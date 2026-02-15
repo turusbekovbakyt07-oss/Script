@@ -1,0 +1,26 @@
+/*
+Node Video Unlock Premium - Fixed
+*/
+
+let body = $response.body;
+
+if (body) {
+    try {
+        let obj = JSON.parse(body);
+        if ($request.url.indexOf("/user/info") !== -1) {
+            obj.data = obj.data || {};
+            obj.data.is_premium = true;
+            obj.data.premium_expired_time = 4070880000;
+            obj.data.is_free_trial = false;
+            obj.data.has_order = true;
+            obj.data.premium_type = 1;
+            $done({ body: JSON.stringify(obj) });
+        } else {
+            $done({});
+        }
+    } catch (e) {
+        $done({});
+    }
+} else {
+    $done({});
+}
