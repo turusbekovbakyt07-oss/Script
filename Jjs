@@ -1,0 +1,73 @@
+local player = game:GetService("Players").LocalPlayer
+
+local skins = {
+    ["Higuruma"] = { 
+        Shirt = "15469614454", Pants = "15469617263", Accs = {"16104862586"} 
+    },
+    ["Gojo"] = { 
+        Shirt = "14456570653", Pants = "14456574717", Accs = {"14450849303", "14450917630"} 
+    },
+    ["Yuji"] = { 
+        Shirt = "14453303661", Pants = "14453306915", Accs = {"14450257577"} 
+    },
+    ["Hakari"] = {
+        Shirt = "14589333907", Pants = "14589336152", Accs = {"14774304671"}
+    },
+    ["Mahito"] = {
+        Shirt = "14454178521", Pants = "14454181295", Accs = {"14454020131"}
+    },
+    ["Sukuna"] = {
+        Shirt = "14441457127", Pants = "14441460305", Accs = {"14441221147"}
+    }
+}
+
+local function applyVisual(char, name)
+    local skin = skins[name]
+    if not skin or not char then return end
+
+    char:WaitForChild("Humanoid")
+    
+    local shirt = char:FindFirstChildOfClass("Shirt") or Instance.new("Shirt", char)
+    local pants = char:FindFirstChildOfClass("Pants") or Instance.new("Pants", char)
+    
+    shirt.ShirtTemplate = "rbxassetid://" .. skin.Shirt
+    pants.PantsTemplate = "rbxassetid://" .. skin.Pants
+
+    for _, id in pairs(skin.Accs) do
+        pcall(function()
+            local acc = game:GetObjects("rbxassetid://" .. id)[1]
+            if acc then acc.Parent = char end
+        end)
+    end
+end
+
+local function checkTools(char)
+    local function scan(location)
+        for _, tool in pairs(location:GetChildren()) do
+            if tool:IsA("Tool") then
+                local tName = tool.Name:lower()
+                if tName:find("executioner") or tName:find("lawyer") then applyVisual(char, "Higuruma")
+                elseif tName:find("infinity") or tName:find("limitless") then applyVisual(char, "Gojo")
+                elseif tName:find("cursed") or tName:find("itadori") then applyVisual(char, "Yuji")
+                elseif tName:find("rough") or tName:find("fever") or tName:find("hakari") then applyVisual(char, "Hakari")
+                elseif tName:find("idle") or tName:find("mahito") then applyVisual(char, "Mahito")
+                elseif tName:find("cleave") or tName:find("vessel") then applyVisual(char, "Sukuna") end
+            end
+        end
+    end
+    scan(player.Backpack)
+    scan(char)
+end
+
+local function setupCharacter(char)
+    char.ChildAdded:Connect(function(child)
+        if child:IsA("Tool") then
+            checkTools(char)
+        end
+    end)
+    task.wait(1)
+    checkTools(char)
+end
+
+player.CharacterAdded:Connect(setupCharacter)
+if player.Character then setupCharacter(player.Character) end
